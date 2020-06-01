@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://a337928.github.io/"/>
-  <updated>2020-05-30T14:03:29.505Z</updated>
+  <updated>2020-06-01T15:12:27.358Z</updated>
   <id>http://a337928.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>spring事务传播机制的实践</title>
+    <link href="http://a337928.github.io/2020/06/01/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%AE%9E%E8%B7%B5/"/>
+    <id>http://a337928.github.io/2020/06/01/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%AE%9E%E8%B7%B5/</id>
+    <published>2020-06-01T14:37:39.000Z</published>
+    <updated>2020-06-01T15:12:27.358Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="spring事务传播机制的实践"><a href="#spring事务传播机制的实践" class="headerlink" title="spring事务传播机制的实践"></a>spring事务传播机制的实践</h1><h2 id="先复习下传播机制类型"><a href="#先复习下传播机制类型" class="headerlink" title="先复习下传播机制类型"></a>先复习下传播机制类型</h2><h3 id="PROPAGATION-REQUIRED-默认"><a href="#PROPAGATION-REQUIRED-默认" class="headerlink" title="PROPAGATION_REQUIRED (默认)"></a>PROPAGATION_REQUIRED (默认)</h3><ul><li>支持当前事务，如果当前没有事务，则新建事务</li><li>如果当前存在事务，则加入当前事务，合并成一个事务</li></ul><h3 id="REQUIRES-NEW"><a href="#REQUIRES-NEW" class="headerlink" title="REQUIRES_NEW"></a>REQUIRES_NEW</h3><ul><li>新建事务，如果当前存在事务，则把当前事务挂起</li><li>这个方法会独立提交事务，不受调用者的事务影响，父级异常，它也是正常提交</li></ul><h3 id="NESTED"><a href="#NESTED" class="headerlink" title="NESTED"></a>NESTED</h3><ul><li>如果当前存在事务，它将会成为父级事务的一个子事务，方法结束后并没有提交，只有等父事务结束才提交</li><li>如果当前没有事务，则新建事务</li><li>如果它异常，父级可以捕获它的异常而不进行回滚，正常提交</li><li>但如果父级异常，它必然回滚，这就是和 <code>REQUIRES_NEW</code> 的区别</li></ul><h3 id="SUPPORTS"><a href="#SUPPORTS" class="headerlink" title="SUPPORTS"></a>SUPPORTS</h3><ul><li>如果当前存在事务，则加入事务</li><li>如果当前不存在事务，则以非事务方式运行，这个和不写没区别</li></ul><h3 id="NOT-SUPPORTED"><a href="#NOT-SUPPORTED" class="headerlink" title="NOT_SUPPORTED"></a>NOT_SUPPORTED</h3><ul><li>以非事务方式运行</li><li>如果当前存在事务，则把当前事务挂起</li></ul><h3 id="MANDATORY"><a href="#MANDATORY" class="headerlink" title="MANDATORY"></a>MANDATORY</h3><ul><li>如果当前存在事务，则运行在当前事务中</li><li>如果当前无事务，则抛出异常，也即父级方法必须有事务</li></ul><h3 id="NEVER"><a href="#NEVER" class="headerlink" title="NEVER"></a>NEVER</h3><ul><li>以非事务方式运行，如果当前存在事务，则抛出异常，即父级方法必须无事务</li></ul><h2 id="实践问题"><a href="#实践问题" class="headerlink" title="实践问题"></a>实践问题</h2><ul><li>在有两个在事务A和B的情况下，如果B事务嵌套在A事务里面，在默认的传播机制下，子事务如果抛出异常，会使主事物也一起回滚，导致整个事物都回滚，这个就是合并成一个事务的意思。</li><li>如果使用NESTED级别的传播机制，子事务抛出异常，但是主事务可以正常提交的情况下，主事务可以里面的内容可以正常保存，子事务会回滚。spring通过一个safePrint（安全点）机制去实现了这个功能，大概的意思是spring事务的执行在进入子事务时会写入一个safePrint如果出现异常的话，只回滚到这个safePrint。</li><li>同样的问题如果使用REQUIRES_NEW级别的传播机制，也可以保证主事务可以正常提交的情况下，主事务可以里面的内容可以正常保存，子事务会回滚。两者的区别是REQUIRES_NEW是分成两个事务分别提交的，而NESTED是主事务提交的时候一起提交的。其实REQUIRES_NEW可以堪称看成是两个不同的事务。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;spring事务传播机制的实践&quot;&gt;&lt;a href=&quot;#spring事务传播机制的实践&quot; class=&quot;headerlink&quot; title=&quot;spring事务传播机制的实践&quot;&gt;&lt;/a&gt;spring事务传播机制的实践&lt;/h1&gt;&lt;h2 id=&quot;先复习下传播机制类型&quot;&gt;&lt;
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/categories/java/"/>
+    
+      <category term="spring" scheme="http://a337928.github.io/categories/java/spring/"/>
+    
+      <category term="mysql" scheme="http://a337928.github.io/categories/java/spring/mysql/"/>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/tags/java/"/>
+    
+      <category term="spring" scheme="http://a337928.github.io/tags/spring/"/>
+    
+      <category term="mysql" scheme="http://a337928.github.io/tags/mysql/"/>
+    
+  </entry>
   
   <entry>
     <title>DefaultSingletonBeanRegistry类各map作用解析</title>
