@@ -29,7 +29,7 @@
 <meta property="og:description" content="spring事务传播机制的实践先复习下传播机制类型PROPAGATION_REQUIRED (默认) 支持当前事务，如果当前没有事务，则新建事务 如果当前存在事务，则加入当前事务，合并成一个事务  REQUIRES_NEW 新建事务，如果当前存在事务，则把当前事务挂起 这个方法会独立提交事务，不受调用者的事务影响，父级异常，它也是正常提交  NESTED 如果当前存在事务，它将会成为父级事务的一个">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-06-01T14:37:39.000Z">
-<meta property="article:modified_time" content="2020-06-01T15:12:27.358Z">
+<meta property="article:modified_time" content="2020-06-07T14:05:09.139Z">
 <meta property="article:author" content="王滔">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="spring">
@@ -169,7 +169,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#spring事务传播机制的实践"><span class="post-toc-number">1.</span> <span class="post-toc-text">spring事务传播机制的实践</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#先复习下传播机制类型"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">先复习下传播机制类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PROPAGATION-REQUIRED-默认"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">PROPAGATION_REQUIRED (默认)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#REQUIRES-NEW"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">REQUIRES_NEW</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NESTED"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">NESTED</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SUPPORTS"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">SUPPORTS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NOT-SUPPORTED"><span class="post-toc-number">1.1.5.</span> <span class="post-toc-text">NOT_SUPPORTED</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MANDATORY"><span class="post-toc-number">1.1.6.</span> <span class="post-toc-text">MANDATORY</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NEVER"><span class="post-toc-number">1.1.7.</span> <span class="post-toc-text">NEVER</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实践问题"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">实践问题</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#spring事务传播机制的实践"><span class="post-toc-number">1.</span> <span class="post-toc-text">spring事务传播机制的实践</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#先复习下传播机制类型"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">先复习下传播机制类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PROPAGATION-REQUIRED-默认"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">PROPAGATION_REQUIRED (默认)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#REQUIRES-NEW"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">REQUIRES_NEW</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NESTED"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">NESTED</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SUPPORTS"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">SUPPORTS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NOT-SUPPORTED"><span class="post-toc-number">1.1.5.</span> <span class="post-toc-text">NOT_SUPPORTED</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MANDATORY"><span class="post-toc-number">1.1.6.</span> <span class="post-toc-text">MANDATORY</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#NEVER"><span class="post-toc-number">1.1.7.</span> <span class="post-toc-text">NEVER</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实践问题1"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">实践问题1</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实践问题2"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">实践问题2</span></a></li></ol></li></ol>
         </nav>
     </aside>
 
@@ -224,10 +224,13 @@
 <h3 id="NEVER"><a href="#NEVER" class="headerlink" title="NEVER"></a>NEVER</h3><ul>
 <li>以非事务方式运行，如果当前存在事务，则抛出异常，即父级方法必须无事务</li>
 </ul>
-<h2 id="实践问题"><a href="#实践问题" class="headerlink" title="实践问题"></a>实践问题</h2><ul>
+<h2 id="实践问题1"><a href="#实践问题1" class="headerlink" title="实践问题1"></a>实践问题1</h2><ul>
 <li>在有两个在事务A和B的情况下，如果B事务嵌套在A事务里面，在默认的传播机制下，子事务如果抛出异常，会使主事物也一起回滚，导致整个事物都回滚，这个就是合并成一个事务的意思。</li>
 <li>如果使用NESTED级别的传播机制，子事务抛出异常，但是主事务可以正常提交的情况下，主事务可以里面的内容可以正常保存，子事务会回滚。spring通过一个safePrint（安全点）机制去实现了这个功能，大概的意思是spring事务的执行在进入子事务时会写入一个safePrint如果出现异常的话，只回滚到这个safePrint。</li>
 <li>同样的问题如果使用REQUIRES_NEW级别的传播机制，也可以保证主事务可以正常提交的情况下，主事务可以里面的内容可以正常保存，子事务会回滚。两者的区别是REQUIRES_NEW是分成两个事务分别提交的，而NESTED是主事务提交的时候一起提交的。其实REQUIRES_NEW可以堪称看成是两个不同的事务。</li>
+</ul>
+<h2 id="实践问题2"><a href="#实践问题2" class="headerlink" title="实践问题2"></a>实践问题2</h2><ul>
+<li>在一个事务里面如果要使用到乐观锁，但是这个锁锁定的是调用外部接口的能力，那就必须在这个乐观锁上单独加上NOT_SUPPORTED，这样才可以在使得在调用外部接口前就已经获得了锁定。</li>
 </ul>
 
         </div>
@@ -237,7 +240,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2020-06-01T15:12:27.358Z" itemprop="dateUpdated">2020-06-01 23:12:27</time>
+    最后更新时间：<time datetime="2020-06-07T14:05:09.139Z" itemprop="dateUpdated">2020-06-07 22:05:09</time>
 </span><br>
 
 
