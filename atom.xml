@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://a337928.github.io/"/>
-  <updated>2020-06-07T14:05:09.139Z</updated>
+  <updated>2020-07-06T14:44:03.822Z</updated>
   <id>http://a337928.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DDD基本概念的理解</title>
+    <link href="http://a337928.github.io/2020/07/06/DDD%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/"/>
+    <id>http://a337928.github.io/2020/07/06/DDD%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</id>
+    <published>2020-07-06T14:43:51.000Z</published>
+    <updated>2020-07-06T14:44:03.822Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="DDD基本概念"><a href="#DDD基本概念" class="headerlink" title="DDD基本概念"></a>DDD基本概念</h1><h2 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">表示一个领域模型的范围，确定这个领域的边界。</span><br></pre></td></tr></table></figure><h2 id="对象值"><a href="#对象值" class="headerlink" title="对象值"></a>对象值</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对象值最主要的特点是，它的没有状态的，或者说它在当前上下文中的状态是不会变的。</span><br></pre></td></tr></table></figure><h2 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h2> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">实体最大的特点是，它是有状态的，而且在当前上下的情况它的状态是会改变的。实体还可能是有关联关系的，那个时候最顶层的实体就是根实体。</span><br></pre></td></tr></table></figure><h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">聚合是一个整合了实体和对象值的一个树状的数据对象。</span><br></pre></td></tr></table></figure><h2 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">领域内的实体发生了状态转变的行为，就是一个领域事件。</span><br></pre></td></tr></table></figure><h2 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">领域内那些实体状态不发生变化的行为可以就是领域服务。</span><br></pre></td></tr></table></figure><h2 id="六边形架构"><a href="#六边形架构" class="headerlink" title="六边形架构"></a>六边形架构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">六边形架构是一个比较自由的架构方式，没有特别严格的约束。</span><br></pre></td></tr></table></figure><h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据代码功能划分的小集合，划分方式没有强制的要求，主要是根据程序的架构，上下等，把用于程序划分为功能内聚的模块。</span><br></pre></td></tr></table></figure><h2 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">简单的理解资源库就是储存领域内实体和值对象的方式，数据库持久化只是资源库保存数据的一种方式。</span><br></pre></td></tr></table></figure><h2 id="应用程序"><a href="#应用程序" class="headerlink" title="应用程序"></a>应用程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">应用程序是在六变形构架内部，包含一整块完整领域功能的代码集。应用程序会包含一个或多个上下文。</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;DDD基本概念&quot;&gt;&lt;a href=&quot;#DDD基本概念&quot; class=&quot;headerlink&quot; title=&quot;DDD基本概念&quot;&gt;&lt;/a&gt;DDD基本概念&lt;/h1&gt;&lt;h2 id=&quot;上下文&quot;&gt;&lt;a href=&quot;#上下文&quot; class=&quot;headerlink&quot; title=
+      
+    
+    </summary>
+    
+    
+      <category term="DDD" scheme="http://a337928.github.io/categories/DDD/"/>
+    
+      <category term="DesignPatterns" scheme="http://a337928.github.io/categories/DDD/DesignPatterns/"/>
+    
+    
+      <category term="DesignPatterns" scheme="http://a337928.github.io/tags/DesignPatterns/"/>
+    
+      <category term="DDD" scheme="http://a337928.github.io/tags/DDD/"/>
+    
+  </entry>
   
   <entry>
     <title>spring事务传播机制的实践</title>
