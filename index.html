@@ -157,6 +157,100 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-volatile 关键字解析"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-07-20 23:01:42" datetime="2020-07-20T15:01:42.000Z"  itemprop="datePublished">2020-07-20</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/jvm/">jvm</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/">volatile 关键字解析（一）</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        volatile 关键字解析（一）​        要说清楚jvm中volatile关键字的实现原理这里需要先解释一下jvm中的以下的几种原子操作
+关键的原子操作介绍
+lock：作用于内存的变量，它把一个变量标识为一条线程独占的状态。
+unlock：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。
+read：作用于主内存的变量，它把一个变量的值从主内...
+    
+
+        <a href="/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ivm/" rel="tag">ivm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-jvm 类加载机制"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-07-07 22:58:27" datetime="2020-07-07T14:58:27.745Z"  itemprop="datePublished">2020-07-07</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">jvm 类加载机制</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        jvm 类加载机制jdk7以前的版本双亲委派机制1234jvm虚拟机分为三种类型的类加载器只加载rt包下java类的bootstrap加载器使用c&#x2F;c++编写，java程序不能获取到这个类加载器加载lib包下java类的加载java应用程序的应用程序类加载器，java程序可以获取到的最根节点的类加载器。
+
+
+
+jdk8开始的版本
+    
+
+        <a href="/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-DDD基本概念"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -299,12 +393,54 @@ NESTED
 java
 springtags:
 java
-springdate: 2017-09-03 14:24:39
-
-容器工厂实例化流程(一)1.Sourcespring 初始化最先获得熟悉资源如url，url,file，2.beanDefinition通过解析source文件获得BeanDefinit...
+springdate: 2017-09-03 14:24:39容器工厂实例化流程(一)1.Sourcespring 初始化最先获得熟悉资源如url，url,file，2.beanDefinition通过解析source文件获得BeanDefinitio...
     
 
         <a href="/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-spring－容器工厂实例化流程（spring-5源码master分支）"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-05-30 22:03:29" datetime="2020-05-30T14:03:29.509Z"  itemprop="datePublished">2020-05-30</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/">spring－容器工厂实例化流程（spring-5源码master分支）</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        title: spring－容器工厂实例化流程（spring 5源码master分支）author: 王滔categories:
+
+java
+springtags:
+java
+springdate: 2017-12-23 23:30:18容器工厂实例化流程（二）1.Sourcespring 初始化最先获得资源如url，url,file的source对象  2.BeanDefinitionRe...
+    
+
+        <a href="/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
@@ -349,53 +485,6 @@ private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap
     
 
         <a href="/2017/12/25/DefaultSingletonBeanRegistry%E7%B1%BB%E8%A7%A3%E6%9E%90/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/" rel="tag">spring</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-spring－容器工厂实例化流程（spring-5源码master分支）"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2017-12-23 23:30:18" datetime="2017-12-23T15:30:18.000Z"  itemprop="datePublished">2017-12-23</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/spring/">spring</a></li></ul></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/12/23/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/">spring－容器工厂实例化流程（spring 5源码master分支）</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        1.Sourcespring 初始化最先获得资源如url，url,file的source对象  2.BeanDefinitionReader然后通过各个对应的BeanDefinitionReader阅读器解析出资源对象的document对象3.beanDefinition1.通过解析document对象去注册BeanDefinition,其中根节点的对象是RootBeanDefinition...
-    
-
-        <a href="/2017/12/23/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>
@@ -549,112 +638,6 @@ private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap
     <div class="post-footer">
         
 	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/io/" rel="tag">io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-设计模式-OO原则"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2017-10-15 23:03:48" datetime="2017-10-15T15:03:48.000Z"  itemprop="datePublished">2017-10-15</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/DesignPatterns/">DesignPatterns</a></li></ul></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/10/15/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-OO%E5%8E%9F%E5%88%99/">设计模式 OO原则</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        OO原则封装变化多用组合，少用接口针对接口编程，不针对实现编程为交互对象之间的送耦合设计而努力类应该的扩张开放，对修改关闭依赖抽象，不要依赖具体类只和朋友交谈别找我，我会找你类应该只有一个改变的理由
-    
-
-        <a href="/2017/10/15/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-OO%E5%8E%9F%E5%88%99/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DesignPatterns/" rel="tag">DesignPatterns</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-jvm"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2017-09-17 20:04:42" datetime="2017-09-17T12:04:42.000Z"  itemprop="datePublished">2017-09-17</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/jvm/">jvm</a></li></ul></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/09/17/jvm/">jvm 运行时数据区域（读书笔记）</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        ​       
-java虚拟机运行是区域主要分为五个1最近在看《深入理解java虚拟机》这本是书算是国内写的比较好的讲述jvm原理的是书籍，看完后自己做下读书笔记增加印象。
-
-
-
-
-程序计数器
-虚拟机栈
-本地方法栈
-堆
-方法区
-
-1.程序计数器程序计数器是一块比较小的内存空间。可以看作是当前现场所执行的字节码的行号指示器。每条线程都有一个独立的程序计数器，在各线程之间是独立存储的，这类内存...
-    
-
-        <a href="/2017/09/17/jvm/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ivm/" rel="tag">ivm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
 
     </div>
     

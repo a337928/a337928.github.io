@@ -14,22 +14,22 @@
     
     
     
-    <title>spring－容器工厂实例化流程 | Arthur&#39;s blog | java 平凡之路</title>
+    <title>jvm 类加载机制 | Arthur&#39;s blog | java 平凡之路</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
     
     
     <meta name="keywords" content="">
-    <meta name="description" content="title: spring－容器工厂实例化流程（一）author: 王滔categories:  java springtags: java springdate: 2017-09-03 14:24:39容器工厂实例化流程(一)1.Sourcespring 初始化最先获得熟悉资源如url，url,file，2.beanDefinition通过解析source文件获得BeanDefinition,其">
+    <meta name="description" content="jvm 类加载机制jdk7以前的版本双亲委派机制1234jvm虚拟机分为三种类型的类加载器只加载rt包下java类的bootstrap加载器使用c&#x2F;c++编写，java程序不能获取到这个类加载器加载lib包下java类的加载java应用程序的应用程序类加载器，java程序可以获取到的最根节点的类加载器。    jdk8开始的版本">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spring－容器工厂实例化流程">
-<meta property="og:url" content="http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:title" content="jvm 类加载机制">
+<meta property="og:url" content="http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="Arthur&#39;s blog">
-<meta property="og:description" content="title: spring－容器工厂实例化流程（一）author: 王滔categories:  java springtags: java springdate: 2017-09-03 14:24:39容器工厂实例化流程(一)1.Sourcespring 初始化最先获得熟悉资源如url，url,file，2.beanDefinition通过解析source文件获得BeanDefinition,其">
+<meta property="og:description" content="jvm 类加载机制jdk7以前的版本双亲委派机制1234jvm虚拟机分为三种类型的类加载器只加载rt包下java类的bootstrap加载器使用c&#x2F;c++编写，java程序不能获取到这个类加载器加载lib包下java类的加载java应用程序的应用程序类加载器，java程序可以获取到的最根节点的类加载器。    jdk8开始的版本">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-30T14:03:29.518Z">
-<meta property="article:modified_time" content="2020-07-06T15:02:40.302Z">
+<meta property="article:published_time" content="2020-07-07T14:58:27.745Z">
+<meta property="article:modified_time" content="2020-07-14T15:06:39.892Z">
 <meta property="article:author" content="王滔">
 <meta name="twitter:card" content="summary">
     
@@ -119,7 +119,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">spring－容器工厂实例化流程</div>
+        <div class="flex-col header-title ellipsis">jvm 类加载机制</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -141,11 +141,11 @@
 <header class="content-header post-header">
 
     <div class="container fade-scale">
-        <h1 class="title">spring－容器工厂实例化流程</h1>
+        <h1 class="title">jvm 类加载机制</h1>
         <h5 class="subtitle">
             
-                <time datetime="2020-05-30T14:03:29.518Z" itemprop="datePublished" class="page-time">
-  2020-05-30
+                <time datetime="2020-07-07T14:58:27.745Z" itemprop="datePublished" class="page-time">
+  2020-07-07
 </time>
 
 
@@ -164,18 +164,18 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#容器工厂实例化流程-一"><span class="post-toc-number">1.</span> <span class="post-toc-text">容器工厂实例化流程(一)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#1-Source"><span class="post-toc-number">1.0.0.0.0.1.</span> <span class="post-toc-text">1.Source</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#2-beanDefinition"><span class="post-toc-number">1.0.0.0.0.2.</span> <span class="post-toc-text">2.beanDefinition</span></a></li><li class="post-toc-item post-toc-level-6"><a class="post-toc-link" href="#3-AbstractBeanFactory"><span class="post-toc-number">1.0.0.0.0.3.</span> <span class="post-toc-text">3.AbstractBeanFactory</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#jvm-类加载机制"><span class="post-toc-number">1.</span> <span class="post-toc-text">jvm 类加载机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#jdk7以前的版本"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">jdk7以前的版本</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#双亲委派机制"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">双亲委派机制</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#jdk8开始的版本"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">jdk8开始的版本</span></a></li></ol></li></ol>
         </nav>
     </aside>
 
 
-<article id="post-spring－容器工厂实例化流程"
+<article id="post-jvm 类加载机制"
   class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">spring－容器工厂实例化流程</h1>
+        <h1 class="post-card-title">jvm 类加载机制</h1>
         <div class="post-meta">
-            <time class="post-time" title="2020-05-30 22:03:29" datetime="2020-05-30T14:03:29.518Z"  itemprop="datePublished">2020-05-30</time>
+            <time class="post-time" title="2020-07-07 22:58:27" datetime="2020-07-07T14:58:27.745Z"  itemprop="datePublished">2020-07-07</time>
 
             
 
@@ -188,15 +188,11 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <p>title: spring－容器工厂实例化流程（一）<br>author: 王滔<br>categories:</p>
-<ul>
-<li>java</li>
-<li>spring<br>tags:</li>
-<li>java</li>
-<li>spring<br>date: 2017-09-03 14:24:39<h1 id="容器工厂实例化流程-一"><a href="#容器工厂实例化流程-一" class="headerlink" title="容器工厂实例化流程(一)"></a>容器工厂实例化流程(一)</h1><h6 id="1-Source"><a href="#1-Source" class="headerlink" title="1.Source"></a>1.Source</h6>spring 初始化最先获得熟悉资源如url，url,file，<h6 id="2-beanDefinition"><a href="#2-beanDefinition" class="headerlink" title="2.beanDefinition"></a>2.beanDefinition</h6>通过解析source文件获得BeanDefinition,其中根节点的对象是RootBeanDefinition。<h6 id="3-AbstractBeanFactory"><a href="#3-AbstractBeanFactory" class="headerlink" title="3.AbstractBeanFactory"></a>3.AbstractBeanFactory</h6>1.获得RootBeanDefinition后通过AbstractBeanFactory实例化文件<br>2.解析RootBeanDefinition的属性时，需要使用到PropertyEditor属性编辑器。<br>3.getBean方法<br>4.先通过name获得BeanName<br>5.然后检查singleton是否有bean实例已经生成<br>  ● DefaultSingletonBeanRegistry 实例化singletonbean的工厂<br>  ● 先从singletonObjects中查找是否有已经实例化的bean有则返回<br>  ● 没有在加载则查看是否正在加载中。<br>  ● 如果是正在加载中，则看是否已经提前曝光<br>  ● 如果没有提前曝光，则判定是否可以提前曝光<br>  ● 如果可以提前曝光则去获取当前beanName的factory。<br>  ● 如果factory存在则提前曝光当前bean，然后移除这个工厂。<br>6.如果检查有实例返回<br>  ● 则检查是不是factoryBean<br>  ● 如果是普通bean实例则直接返回对象<br>  ● 如果是factoryBean, 则去查找当前eanName的RootBeanDefinition，获取synthetic属性后去创建实例<br>  ● 如果创建的是单列<br>  ● 先从缓存获取当前实例。<pre><code>○ 如果没有缓存则直接获取factoryBean.getObject()
-○ 返回实例    </code></pre>7.如果没有实例返回<br>  ● 如果是在一个循环引用中又引用到了自己，则抛出异常<br>  ● 检查是否有parentBeanFactory，如果有而且也包含beanName的BeanDefinition 则在parentBeanFactory中获得实例<br>  ● 如果没有parentBeanFactory,则依次判定是否是singleton,prototype,scope;<br>  ● 根据类型创建完实例以后，再检查创建的实例是否和要创建的类有区别。<br>  ● 最后返回bean实例。</li>
-</ul>
+            <h1 id="jvm-类加载机制"><a href="#jvm-类加载机制" class="headerlink" title="jvm 类加载机制"></a>jvm 类加载机制</h1><h2 id="jdk7以前的版本"><a href="#jdk7以前的版本" class="headerlink" title="jdk7以前的版本"></a>jdk7以前的版本</h2><h3 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">jvm虚拟机分为三种类型的类加载器</span><br><span class="line">只加载rt包下java类的bootstrap加载器使用c&#x2F;c++编写，java程序不能获取到这个类加载器</span><br><span class="line">加载lib包下java类的</span><br><span class="line">加载java应用程序的应用程序类加载器，java程序可以获取到的最根节点的类加载器。</span><br></pre></td></tr></table></figure>
 
+
+
+<h2 id="jdk8开始的版本"><a href="#jdk8开始的版本" class="headerlink" title="jdk8开始的版本"></a>jdk8开始的版本</h2>
         </div>
 
         <blockquote class="post-copyright">
@@ -204,12 +200,12 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2020-07-06T15:02:40.302Z" itemprop="dateUpdated">2020-07-06 23:02:40</time>
+    最后更新时间：<time datetime="2020-07-14T15:06:39.892Z" itemprop="dateUpdated">2020-07-14 23:06:39</time>
 </span><br>
 
 
         
-        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" target="_blank" rel="external">http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/</a>
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" target="_blank" rel="external">http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</a>
         
     </div>
     
@@ -238,7 +234,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&title=《spring－容器工厂实例化流程》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&title=《jvm 类加载机制》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -248,22 +244,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&title=《spring－容器工厂实例化流程》 — Arthur's blog&source=java mysql" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&title=《jvm 类加载机制》 — Arthur's blog&source=java mysql" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《spring－容器工厂实例化流程》 — Arthur's blog&url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&via=http://a337928.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《jvm 类加载机制》 — Arthur's blog&url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&via=http://a337928.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -286,18 +282,18 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2020/06/01/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%AE%9E%E8%B7%B5/" id="post-prev" class="post-nav-link">
+      <a href="/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">spring事务传播机制的实践</h4>
+        <h4 class="title">volatile 关键字解析（一）</h4>
       </a>
     </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/" id="post-next" class="post-nav-link">
+      <a href="/2020/07/06/DDD%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">spring－容器工厂实例化流程（spring-5源码master分支）</h4>
+        <h4 class="title">DDD基本概念的理解</h4>
       </a>
     </div>
   
@@ -397,7 +393,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&title=《spring－容器工厂实例化流程》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&title=《jvm 类加载机制》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -407,22 +403,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&title=《spring－容器工厂实例化流程》 — Arthur's blog&source=java mysql" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&title=《jvm 类加载机制》 — Arthur's blog&source=java mysql" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《spring－容器工厂实例化流程》 — Arthur's blog&url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/&via=http://a337928.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《jvm 类加载机制》 — Arthur's blog&url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/&via=http://a337928.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -433,7 +429,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAElElEQVR42u3aWW7bUBAEwNz/0soBHFHdMwzAJxe/DEvmUjQw658/8fH6cfz8NP/b6zP8/M67v83Pc/1Xtx2YMGHChOmRTK/LI3mM5Dw57uxltM+bPzsmTJgwYfoOpuR012H47QXKJCPBzV9tkjRcPzsmTJgwYfptTC1ljjh77OTlXf8GEyZMmDBh2pey++Zy23rO6TFhwoQJ029gaoPxJuTPxqVtijArs2/ohWPChAkTpocxzUaA3/HzzQcmTJgwYXoY06s8Zo3gnD4vYmeF+uzAhAkTJkznMrWlb966XRWQ5ahyU3gXI1JMmDBhwvQVTJu2b95U3QwmZ9/fjG8xYcKECdN3MM1K2VkC0SLmy0NtMVyMYzFhwoQJ07FM16XgbFlnswyUv562DM6vHv1nYcKECROmQ5hmDdO2CZs3i/cl6yyZKP6DMGHChAnTgUzt4DBv0bYrQZvx6mwJKSr+MWHChAnTgUxJKfg/UoH8pmcN4vZlf0iDMGHChAnTsUz7FZy7ytQ2bG/GnMNRLiZMmDBhOpBpFho3pezsBSTnbMva4myYMGHChOlYpjxI57cyG5S2Szazu83TlKhPgAkTJkyYHs/UlrU50CzoXp9tdq0ksfhwLUyYMGHCdCxTcruzsjYPunmrtx2U7kenmDBhwoTpdKZ8/SXhmC3TbD7NB5ntsBYTJkyYMH0HUxu8Z+s+m4WezdG+/poMEyZMmDAdxdQWsXkh2p6/vVZbeOcJDSZMmDBhOp1p01RtbzpvFs8eqW3jFikLJkyYMGH6CqZ96Zg3YduWbns/mzL7w4oqJkyYMGE6imkWOO9dwRkG6dHIs73W2+QAEyZMmDAdy5Q3YfMSt334WZm6H4Le3AvHhAkTJkwPYMofJv9OwtruE+VXbM+ZJD2YMGHChOl0pvwCeQm6B920kvcpAiZMmDBh+g1M7SpMApePJ5PHbhePktf2j+9jwoQJE6bDmdpQ2i7H5CF/04pt13eKl4oJEyZMmA5nmpWX+TizLTXbFZ9ktWhTw2LChAkTptOZZiXurIzMw3be6m2XgeoWMCZMmDBhOpypLW7zYN8u6LSjzXz42qK/7YVjwoQJE6ajmDYQ9y7r3NUITl5w3eTFhAkTJkyHM911c/tVm7xgTgrp/advnx0TJkyYMB3C9AqO2WXaJnL7nTY5mI1so4kuJkyYMGF6PFP+872l5mzVZtaMbtvEb3vhmDBhwoTpcKZ8yJeXu/um8H4s2q7sfEgIMGHChAnTgUyzVuxm0eeugL0K9gkWJkyYMGE6likfTLaDxvz7sxCepyab1KGe32LChAkTpocxvcrjLtZ8HWc27GyJPyQ6mDBhwoTpWKZ9TExuqB2FztaAZg3c2RAXEyZMmDCdxbQJ2O1qziwhaMvjtiCPEgJMmDBhwnQ4U75qkyQNm0QhD/OzNCVPfYqbwIQJEyZMX8Q0C655qE4K0Tz8J+3dCBcTJkyYMP0apptLykXDd1P0tgNXTJgwYcJ0OlPbhJ2t6SRXaVvG+zWdKKXAhAkTJkzHMm3arG2hu28i31zQLp4XEyZMmDA9nukvqYjOF5OibDkAAAAASUVORK5CYII=" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADMUlEQVR42u3aQW7jQAwEwPz/097rAomVbo4CREzpZDi2NDU+MGzOx0d8vT5d/7//+TOfv3v9mfzz1/e/+cLGxsZ+CPt1eV2zkzufPyXZ7vwp2NjY2FvZbSGZlbfrItRuRHLnt+9jY2Nj/2F2XsxOFpeUyaRRwcbGxsa+fkBSYE6K2awVwcbGxv6b7BmjfXxShGZB1Q9madjY2Ni/nj172O98/SPzbWxsbOxfzH6NrnxgkGzi7JjOiQIbGxt7Ezt/TBv9zA7fJJh247CxsbF3s98Voes4ZtYStAVvtn1RhISNjY29mp2PBJLvJsUp2crzaOmbAoaNjY39WPZsmHpDoBOHUMkd2vKGjY2NvY/dDk3bRbSxfhtm5WPp/kPY2NjYz2bPoqWTypmHXG1Z/WKd2NjY2OvY7aC3PabTLqstUe0Pg42Njb2JPYuKWtK9mNl9igEwNjY29kPYs8A9P+LThkTtyLldLTY2NvY+dh7o3DWOze+TjBBOfgBsbGzsreyTEW/y4OSvSdTVtjrY2NjYf419cmgyLyr5Qu9qRbCxsbH3sfMBQBv35Mdu2pFzuylfvIONjY29iJ2Pddtx76wQtj/DSciFjY2NvYN9V6D/E83D+ea+XQM2Njb2UvbJwZd8cNveoX1KFIFhY2NjL2LPgv7hSPXgkE0bctWjAmxsbOzHsmdHZ5LBcN5I5GPmvExiY2Nj/x12O4ht24z2GFA+JMhfD2cj2NjY2A9hnwwG8uh/1t7kzUa7fdjY2Nj72PkRmbtio9mwIW+WvnkWNjY29lJ2W5BmheRkK0/K2xetCDY2NvYK9mzUOisheWg1+26yHmxsbOx97GvwbImzoWwbG+VreDsewMbGxl7Bnh2jnC16VpBmLVA02MDGxsZewX6VV97ftOx2zJBHV1Ergo2Njf1Ydn7lwVMbALXlKg+/ZmUPGxsb+4nsvGjl/9UnA928FUmKZb5mbGxs7K3sPDxqt6llz7YpWT82NjY29kmElEc8+fihLZbY2NjY2Oexfg6+q4h+M+7FxsbGXsTOb9FG+XWTcFBcizKGjY2NvYidD3rb5iEveCfhUTL2wMbGxl7K/gfOYm3xCVU6AwAAAABJRU5ErkJggg==" alt="微信分享二维码">
 </div>
 
 

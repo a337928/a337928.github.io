@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://a337928.github.io/"/>
-  <updated>2020-07-06T14:49:52.747Z</updated>
+  <updated>2020-07-20T15:01:24.349Z</updated>
   <id>http://a337928.github.io/</id>
   
   <author>
@@ -15,6 +15,58 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>volatile 关键字解析（一）</title>
+    <link href="http://a337928.github.io/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/"/>
+    <id>http://a337928.github.io/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/</id>
+    <published>2020-07-20T15:01:42.000Z</published>
+    <updated>2020-07-20T15:01:24.349Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="volatile-关键字解析（一）"><a href="#volatile-关键字解析（一）" class="headerlink" title="volatile 关键字解析（一）"></a>volatile 关键字解析（一）</h1><p>​        要说清楚jvm中volatile关键字的实现原理这里需要先解释一下jvm中的以下的几种原子操作</p><h2 id="关键的原子操作介绍"><a href="#关键的原子操作介绍" class="headerlink" title="关键的原子操作介绍"></a>关键的原子操作介绍</h2><ul><li>lock：作用于内存的变量，它把一个变量标识为一条线程独占的状态。</li><li>unlock：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。</li><li>read：作用于主内存的变量，它把一个变量的值从主内存传输到线程的工作内存中，以便随后的load动作使用。</li><li>load：作用于工作内存的变量，它把read操作从主内存中得到的变量值放入工作内存的变量副本中。</li><li>use：作用于工作内存的变量，它把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。</li><li>assign：作用于工作内存的变量，它把一个从执行引擎接收的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令是执行这个操作。</li><li>stroe：作用于工作内存的变量，它把工作内存中一个变量的值传送主内存中，以便随后的write操作。</li><li>write：作用于主内的变量，它把store操作从工作内存中得到的变量的值放入主内存的变量中。</li></ul><h2 id="原子操作的规则"><a href="#原子操作的规则" class="headerlink" title="原子操作的规则"></a>原子操作的规则</h2><ul><li>不允许read和load，store和write操作之一单独出现，</li><li>不允许一个线程丢弃它最近的assign操作，即变量在工作内存改变了之后必须同步到主内存。</li><li>一个新的变量只能在主内存中“诞生”，不允许在工作内存中直接使用一个未被初始化的变量。</li><li>一个变量在同一时刻只允许一条线程对其进行lock操作，但是lock操作可以被同一个线程重复执行多次，多次执行lock后，只有执行相同次数的的unlock操作，变量才会被解锁。</li><li>如果对变量执行lock操作，那将会情空工作内存中此变量的值，值执行引擎使用这个变量前，需要重新执行load和assign操作后以初始化变量值</li><li>如果一个变量事先没有被lock操作锁定，那就不允许对他执行unlock操作，也不允许unlock一个被其他线程锁定的变量</li><li>对一个变量执行unlock操作之前，必须先把此变量同步回主内存中（执行store、write操作）。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;volatile-关键字解析（一）&quot;&gt;&lt;a href=&quot;#volatile-关键字解析（一）&quot; class=&quot;headerlink&quot; title=&quot;volatile 关键字解析（一）&quot;&gt;&lt;/a&gt;volatile 关键字解析（一）&lt;/h1&gt;&lt;p&gt;​        要
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/categories/java/"/>
+    
+      <category term="jvm" scheme="http://a337928.github.io/categories/java/jvm/"/>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/tags/java/"/>
+    
+      <category term="ivm" scheme="http://a337928.github.io/tags/ivm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>jvm 类加载机制</title>
+    <link href="http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/"/>
+    <id>http://a337928.github.io/2020/07/07/jvm%20%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</id>
+    <published>2020-07-07T14:58:27.745Z</published>
+    <updated>2020-07-14T15:06:39.892Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="jvm-类加载机制"><a href="#jvm-类加载机制" class="headerlink" title="jvm 类加载机制"></a>jvm 类加载机制</h1><h2 id="jdk7以前的版本"><a href="#jdk7以前的版本" class="headerlink" title="jdk7以前的版本"></a>jdk7以前的版本</h2><h3 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">jvm虚拟机分为三种类型的类加载器</span><br><span class="line">只加载rt包下java类的bootstrap加载器使用c&#x2F;c++编写，java程序不能获取到这个类加载器</span><br><span class="line">加载lib包下java类的</span><br><span class="line">加载java应用程序的应用程序类加载器，java程序可以获取到的最根节点的类加载器。</span><br></pre></td></tr></table></figure><h2 id="jdk8开始的版本"><a href="#jdk8开始的版本" class="headerlink" title="jdk8开始的版本"></a>jdk8开始的版本</h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;jvm-类加载机制&quot;&gt;&lt;a href=&quot;#jvm-类加载机制&quot; class=&quot;headerlink&quot; title=&quot;jvm 类加载机制&quot;&gt;&lt;/a&gt;jvm 类加载机制&lt;/h1&gt;&lt;h2 id=&quot;jdk7以前的版本&quot;&gt;&lt;a href=&quot;#jdk7以前的版本&quot; class
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>DDD基本概念的理解</title>
@@ -85,9 +137,9 @@
     <link href="http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/"/>
     <id>http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B/</id>
     <published>2020-05-30T14:03:29.518Z</published>
-    <updated>2020-07-06T15:00:31.351Z</updated>
+    <updated>2020-07-06T15:02:40.302Z</updated>
     
-    <content type="html"><![CDATA[<p>title: spring－容器工厂实例化流程（一）<br>author: 王滔<br>categories:</p><ul><li>java</li><li>spring<br>tags:</li><li>java</li><li>spring<br>date: 2017-09-03 14:24:39</li></ul><h1 id="容器工厂实例化流程-一"><a href="#容器工厂实例化流程-一" class="headerlink" title="容器工厂实例化流程(一)"></a>容器工厂实例化流程(一)</h1><h6 id="1-Source"><a href="#1-Source" class="headerlink" title="1.Source"></a>1.Source</h6><pre><code>spring 初始化最先获得熟悉资源如url，url,file，</code></pre><h6 id="2-beanDefinition"><a href="#2-beanDefinition" class="headerlink" title="2.beanDefinition"></a>2.beanDefinition</h6><pre><code>通过解析source文件获得BeanDefinition,其中根节点的对象是RootBeanDefinition。</code></pre><h6 id="3-AbstractBeanFactory"><a href="#3-AbstractBeanFactory" class="headerlink" title="3.AbstractBeanFactory"></a>3.AbstractBeanFactory</h6><pre><code>1.获得RootBeanDefinition后通过AbstractBeanFactory实例化文件2.解析RootBeanDefinition的属性时，需要使用到PropertyEditor属性编辑器。3.getBean方法4.先通过name获得BeanName5.然后检查singleton是否有bean实例已经生成  ● DefaultSingletonBeanRegistry 实例化singletonbean的工厂  ● 先从singletonObjects中查找是否有已经实例化的bean有则返回  ● 没有在加载则查看是否正在加载中。  ● 如果是正在加载中，则看是否已经提前曝光  ● 如果没有提前曝光，则判定是否可以提前曝光  ● 如果可以提前曝光则去获取当前beanName的factory。  ● 如果factory存在则提前曝光当前bean，然后移除这个工厂。6.如果检查有实例返回  ● 则检查是不是factoryBean  ● 如果是普通bean实例则直接返回对象  ● 如果是factoryBean, 则去查找当前eanName的RootBeanDefinition，获取synthetic属性后去创建实例  ● 如果创建的是单列  ● 先从缓存获取当前实例。      ○ 如果没有缓存则直接获取factoryBean.getObject()      ○ 返回实例    7.如果没有实例返回  ● 如果是在一个循环引用中又引用到了自己，则抛出异常  ● 检查是否有parentBeanFactory，如果有而且也包含beanName的BeanDefinition 则在parentBeanFactory中获得实例  ● 如果没有parentBeanFactory,则依次判定是否是singleton,prototype,scope;  ● 根据类型创建完实例以后，再检查创建的实例是否和要创建的类有区别。  ● 最后返回bean实例。</code></pre>]]></content>
+    <content type="html"><![CDATA[<p>title: spring－容器工厂实例化流程（一）<br>author: 王滔<br>categories:</p><ul><li>java</li><li>spring<br>tags:</li><li>java</li><li>spring<br>date: 2017-09-03 14:24:39<h1 id="容器工厂实例化流程-一"><a href="#容器工厂实例化流程-一" class="headerlink" title="容器工厂实例化流程(一)"></a>容器工厂实例化流程(一)</h1><h6 id="1-Source"><a href="#1-Source" class="headerlink" title="1.Source"></a>1.Source</h6>spring 初始化最先获得熟悉资源如url，url,file，<h6 id="2-beanDefinition"><a href="#2-beanDefinition" class="headerlink" title="2.beanDefinition"></a>2.beanDefinition</h6>通过解析source文件获得BeanDefinition,其中根节点的对象是RootBeanDefinition。<h6 id="3-AbstractBeanFactory"><a href="#3-AbstractBeanFactory" class="headerlink" title="3.AbstractBeanFactory"></a>3.AbstractBeanFactory</h6>1.获得RootBeanDefinition后通过AbstractBeanFactory实例化文件<br>2.解析RootBeanDefinition的属性时，需要使用到PropertyEditor属性编辑器。<br>3.getBean方法<br>4.先通过name获得BeanName<br>5.然后检查singleton是否有bean实例已经生成<br>  ● DefaultSingletonBeanRegistry 实例化singletonbean的工厂<br>  ● 先从singletonObjects中查找是否有已经实例化的bean有则返回<br>  ● 没有在加载则查看是否正在加载中。<br>  ● 如果是正在加载中，则看是否已经提前曝光<br>  ● 如果没有提前曝光，则判定是否可以提前曝光<br>  ● 如果可以提前曝光则去获取当前beanName的factory。<br>  ● 如果factory存在则提前曝光当前bean，然后移除这个工厂。<br>6.如果检查有实例返回<br>  ● 则检查是不是factoryBean<br>  ● 如果是普通bean实例则直接返回对象<br>  ● 如果是factoryBean, 则去查找当前eanName的RootBeanDefinition，获取synthetic属性后去创建实例<br>  ● 如果创建的是单列<br>  ● 先从缓存获取当前实例。<pre><code>○ 如果没有缓存则直接获取factoryBean.getObject()○ 返回实例    </code></pre>7.如果没有实例返回<br>  ● 如果是在一个循环引用中又引用到了自己，则抛出异常<br>  ● 检查是否有parentBeanFactory，如果有而且也包含beanName的BeanDefinition 则在parentBeanFactory中获得实例<br>  ● 如果没有parentBeanFactory,则依次判定是否是singleton,prototype,scope;<br>  ● 根据类型创建完实例以后，再检查创建的实例是否和要创建的类有区别。<br>  ● 最后返回bean实例。</li></ul>]]></content>
     
     <summary type="html">
     
@@ -99,6 +151,33 @@
 &lt;li&gt;spring&lt;br&gt;tags:&lt;/li&gt;
 &lt;li&gt;java&lt;/li&gt;
 &lt;li&gt;spring&lt;br&gt;date:
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>spring－容器工厂实例化流程（spring-5源码master分支）</title>
+    <link href="http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/"/>
+    <id>http://a337928.github.io/2020/05/30/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/</id>
+    <published>2020-05-30T14:03:29.509Z</published>
+    <updated>2020-07-06T15:02:16.898Z</updated>
+    
+    <content type="html"><![CDATA[<p>title: spring－容器工厂实例化流程（spring 5源码master分支）<br>author: 王滔<br>categories:</p><ul><li>java</li><li>spring<br>tags:</li><li>java</li><li>spring<br>date: 2017-12-23 23:30:18<h1 id="容器工厂实例化流程（二）"><a href="#容器工厂实例化流程（二）" class="headerlink" title="容器工厂实例化流程（二）"></a>容器工厂实例化流程（二）</h1><h3 id="1-Source"><a href="#1-Source" class="headerlink" title="1.Source"></a>1.Source</h3>spring 初始化最先获得资源如url，url,file的source对象  <h3 id="2-BeanDefinitionReader"><a href="#2-BeanDefinitionReader" class="headerlink" title="2.BeanDefinitionReader"></a>2.BeanDefinitionReader</h3>然后通过各个对应的BeanDefinitionReader阅读器解析出资源对象的document对象<h3 id="3-beanDefinition"><a href="#3-beanDefinition" class="headerlink" title="3.beanDefinition"></a>3.beanDefinition</h3>1.通过解析document对象去注册BeanDefinition,其中根节点的对象是RootBeanDefinition。<br>2.document对象是一个xml的对象，每解析成功一个熟悉就保持到DeanDefinition对象中去，直到整个document解析完毕。  <h3 id="4。AbstractBeanFactory"><a href="#4。AbstractBeanFactory" class="headerlink" title="4。AbstractBeanFactory"></a>4。AbstractBeanFactory</h3>从这里才真正开始spring获取和新建bean。<br> 3.getBean方法，是获取bean的开始，真正开始获取bean的操作是从doGetBean开始的<br> 4.先通过name获得BeanName，因为工厂bean的名字前面需要加“&amp;“符号<br> 5.然后检查singleton是否有bean实例已经生成，spring先不管你的bean是单列模式还是原型模式，一上来就先去单利的注册器中去获取缓存中已经实现的bean  <pre><code>1).先从singletonObjects中查找是否有已经实例化的bean有则返回2).没有在加载完成的bean则去看是否正在加载中，如果都没有则直接返回null；3).如果是正在加载中，则看是否已经提前曝光4).如果没有提前曝光，则判定是否可以提前曝光，如果不可用则直接返回null；5).如果可以提前曝光则去获取当前beanName的已经加载完成的工厂bean缓存中的实例6).如果factory存在存在这个实例，则提前曝光当前bean，然后移除这个工厂。</code></pre>6.如果检查有实例返回，则去getObjectForBeanInstance这个方法中去获得自己正在需要的bean<pre><code>1).则检查当前的beanname如果是工厂bean的名字，但是已经获取的beanInstance不是工厂bean则直接返回异常2).如果是普通bean实例则直接返回beanInstance对象就可用3).如果是factoryBean, 则去查找当前beanName的RootBeanDefinition并且合并所有parentBeanDefinition的属性，获取synthetic属性后去创建实例4).生成factoyBean使用getObjectFromFactoryBean这个方法5).如果创建的是单列，而且缓存中已经有这个bean    * 则从缓存factoryBeanObjectCache获取当前实例，如果缓存中有bean则直接返回    * 如果没有则用doGetObjectFromFactoryBean生成        这个方法主要做来两件是，        + 第一件是如果这个bean的安全管理System.getSecurityManager不是null的话就用AccessController.doPrivileged方法        去实现factory.getObject()方法，否则的话就是直接factory.getObject()方方法取得        + 第二件是如果获取的object是null的话判定这个bean是否是正在创建的如果是则抛出异常，不是的话则返回一个NullBean    * 返回过来的object后，再去factoryBeanObjectCache取一次缓存实例，alreadyThere        + 如果alreadyThere有缓存则覆盖前面拿到的bean，因为循环依赖前面给的bean有可能是nullbean        + 否则的话，如果shouldPostProcess 是ture 需要去调用postProcessObjectFromFactoryBean 这个后置处理，然后放入factoryBeanObjectCache        + 这里返回的object就是这次 getbean正在得到的bean</code></pre>7.如果没有实例返<pre><code>1).如果是在一个原型模式的循环引用中又引用到了自己，则抛出异常2).检查是否有parentBeanFactory，如果有而且也包含beanName的BeanDefinition     如果parentBeanFactory实现了AbstractBeanFactory，则直接调用parentBeanFactory中的doGetBean获得bean     否则的话调用parentBeanFactory的getBean来获得bean3).如果没有parentBeanFactory,则开始加载4).如果typeCheckOnly是false则调用markBeanAsCreated标记这个beanname到正在创建的map缓存中alreadyCreated5).然后开始用getMergedLocalBeanDefinition合并bean的BeanDefinition到RootBeanDefinition中6).用checkMergedBeanDefinition检测合并后的得到的RootBeanDefinition7.)通过RootBeanDefinition.getDependsOn()获取这个bean所依赖的beanName数组，如果者beanname不为空则通过递归先去实例化这些bean8).如果前面的都bean都实例化完成来，则通过检测RootBeanDefinition的scope类型来分别实例化各个bean9).先从singleton模式开始    * 第一步先用getSingleton来创建bean，用了函数式方法传入createBean(beanName, mbd, args);    * getSingleton第一步先锁定singletonObjects后再去获取缓存中是否有对应的bean缓存，有缓存则直接返回实例    * 如果为空则去检测是否可用实现单列，不行直接返回异常    * 调用创建单利的前置方法beforeSingletonCreation，默认实现就是一个简单的注册beanname    * 通过传入的createBean方法返回的factoryBean的getObject去获取实例object    * 调用创建单利的后置方法afterSingletonCreation，默认就是从正在创建的map中移除当前bean    * 然后调用addSingleton去实现bean 的注册，加入到singletonObjects缓存，并注册到registeredSingletons，    从早曝光缓存earlySingletonObjects和singletonFactories中删除，    * 返回实例以后调用getObjectForBeanInstance，和前面直接从缓存中获取bean后调用的方法相同10).如果是prototype模式    * 先通过beforePrototypeCreation注册原型正在创建的缓存中    * 通过createName创建bean    * 后置处理afterPrototypeCreation方法从原型创建缓存中删除创建完成的bean    * 返回实例以后调用getObjectForBeanInstance，和前面直接从缓存中获取bean后调用的方法相同11).其他的模式 几乎和原型模式创建的方法类似。</code></pre></li></ul><h3 id="5-AbstractAutowireCapableBeanFactory"><a href="#5-AbstractAutowireCapableBeanFactory" class="headerlink" title="5.AbstractAutowireCapableBeanFactory"></a>5.AbstractAutowireCapableBeanFactory</h3><pre><code>上面在doGetBean中有一个很重要的方法createBean方法是没有实现的，这个方法是在AbstractAutowireCapableBeanFactory这个类中实现的。1.createBean这个方法是spring创建bean的方式2.开始创建bean时先要确定bean的类型，使用resolveBeanClass方法。    1).先从RootBeanDefinition.hasBeanClass() 中获取已经加载好的类型，如果有已经确定好的类型，就直接返回    2).如果没取到则需要直接去解析，使用doResolveBeanClass()方法。这里又看到System.getSecurityManager这个安全检测，用途和factory.getObject一样。    3).真正解析在这里doResolveBeanClass()里面有一头大象        * 让我们来解析这头大象，首先确定classload类加载器，        * 然后检测typesToMatch，前面给入的类型参数，这里typesToMatch，这个参数一定是null，因为前面没传入。            + 如果typesToMatch不等于空则获取一个临时类加载器getTempClassLoader()            + 如果有临时的类加载器，并且是继承于DecoratingClassLoader类加载器的就用这个的excludeClass方法去排除装饰器来确定使用那个构造方法。            + 然后通过RootBeanDefinition取出className            + 调用 beanExpressionResolverevaluate方法，去评估下给定的beanName是否使用spEL表达式，如果是就用解析其解析后对象            + 如果从mdb中取出的className和解析出来的evaluated对象不相同的话就表示这里使用来动态解析表达式            + 如果evaluated是class是直接返回对象，如果evaluated是String就通过反射生成对象返回，其他情况都抛出异常            + 相反如果从mdb中取出的className和解析出来的evaluated对象相同的话就去反射className生成对象返回。        * 获得解析结构对象后如果mdb是类的话就把它升级为一个RootBeanDefinition，然后把解析生成的对象给到这个mdb中去        * 接着调用这个mdb的prepareMethodOverides() 方法去校验init-method方法是否存在。不存在或者有多个则直接抛出异常        * 接下来是调用resolveBeforeInstantiation这个方法是给实现了 BeanPostProcessors接口来处理对象一个入库，        如果被BeanPostProcessors包装后生成来对象实例则直接返回生成对象        * 如果没有返回就开始进入真正的doCreateBean方法去创建对象了            现在开始进行正在的bean创建了，如果这个要创建的bean是单例模式的，先从factoryBeanInstanceCache中去取一个未完成的beanFactory的实例            + 如果factoryBeanInstanceCache为空则去创建这个实例用createBeanInstance方法            + createBeanInstance还是去前面用到的resolveBeanClass方法中去解析得到一个bean            + 生成后去校验这个bean是否有公共的无参构造函数没有的话就抛出异常            + 去mdb中获取getInstanceSupplier如果有的话就使用obtainFromSupplier方法去获得一个包装类BeanWrapperImpl            + 去mdb中获取getFactoryMethodName如果不为空的话用instantiateUsingFactoryMethod方法去通过静态工厂方法去获取bean获取一个BeanWrapperImpl                # 具体是使用ConstructorResolver的instantiateUsingFactoryMethod方法去生成一个BeanWrapper实例的            + 如果已经解析过则使用解析好的构造函数方法不需要再次锁定 ， 一个类中有多个构造函数，判断使用哪个构造函数实例化过程比较耗性能，            所以采用缓存机制，如果已经解析过则不需要                  # 重复解析而是直接从RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod缓存的值去取，否则需要                  # 再次解析，并将解析的结果添加至RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod中。             + 获得BeanWrapper实例以后从BeanWrapper获取对象bean和beanType            + 然后去合并所有beanDefinition的post-processors，然后在mbd.postProcessed = true;            + 接着如果是单利模式并且允许提前曝光，则去获得早加载产生的bean去加载的到singletonfactory中去            + 使用populateBean方法去填充mdb但是没有看到里面有实现方法            + 使用initializeBean方法初始化bean                # 初始化第一步调用invokeAwareMethods方法把bean实现的aware接口进行填充，告诉这个bean在容器中的名字                # 然后调用applyBeanPostProcessorsBeforeInitialization获取这个bean的后置处理方法后返回wrappedBean                # 接着调用invokeInitMethods，如果bean的配置文件中通过init-method属性指定初始化方法，则就用这个方法去初始化bean，                真正调用是通过invokeCustomInitMethod这个方法来实现的                # 最后是调用applyBeanPostProcessorsAfterInitialization后置处理方法在bean初始化后处理的方法            + 接着判断如果当前的bean是正在创建的bean则去缓存总获取当前的bean实例，            + 如果获取的bean不为空则替换前面生成的bean实例            + 否则的话检测依赖的bean是否已经全部创建，如果有没有创建完成的则直接报错            + 如果顺利就使用registerDisposableBeanIfNecessary方法去注册刚生成的bean后返回生成bean实例        * 这次返回的bean就是最后生成的bean</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;title: spring－容器工厂实例化流程（spring 5源码master分支）&lt;br&gt;author: 王滔&lt;br&gt;categories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;java&lt;/li&gt;
+&lt;li&gt;spring&lt;br&gt;tags:&lt;/li&gt;
+&lt;li&gt;java&lt;/li&gt;
+&lt;l
       
     
     </summary>
@@ -121,36 +200,6 @@
       
       
         &lt;h2 id=&quot;spring类创建过程中各map的作用&quot;&gt;&lt;a href=&quot;#spring类创建过程中各map的作用&quot; class=&quot;headerlink&quot; title=&quot;spring类创建过程中各map的作用&quot;&gt;&lt;/a&gt;spring类创建过程中各map的作用&lt;/h2&gt;&lt;pre&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="java" scheme="http://a337928.github.io/categories/java/"/>
-    
-      <category term="spring" scheme="http://a337928.github.io/categories/java/spring/"/>
-    
-    
-      <category term="java" scheme="http://a337928.github.io/tags/java/"/>
-    
-      <category term="spring" scheme="http://a337928.github.io/tags/spring/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring－容器工厂实例化流程（spring 5源码master分支）</title>
-    <link href="http://a337928.github.io/2017/12/23/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/"/>
-    <id>http://a337928.github.io/2017/12/23/spring%EF%BC%8D%E5%AE%B9%E5%99%A8%E5%B7%A5%E5%8E%82%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%B5%81%E7%A8%8B%EF%BC%88spring-5%E6%BA%90%E7%A0%81master%E5%88%86%E6%94%AF%EF%BC%89/</id>
-    <published>2017-12-23T15:30:18.000Z</published>
-    <updated>2020-07-06T14:52:58.539Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-Source"><a href="#1-Source" class="headerlink" title="1.Source"></a>1.Source</h3><pre><code>spring 初始化最先获得资源如url，url,file的source对象  </code></pre><h3 id="2-BeanDefinitionReader"><a href="#2-BeanDefinitionReader" class="headerlink" title="2.BeanDefinitionReader"></a>2.BeanDefinitionReader</h3><pre><code>然后通过各个对应的BeanDefinitionReader阅读器解析出资源对象的document对象</code></pre><h3 id="3-beanDefinition"><a href="#3-beanDefinition" class="headerlink" title="3.beanDefinition"></a>3.beanDefinition</h3><pre><code>1.通过解析document对象去注册BeanDefinition,其中根节点的对象是RootBeanDefinition。  2.document对象是一个xml的对象，每解析成功一个熟悉就保持到DeanDefinition对象中去，直到整个document解析完毕。  </code></pre><h3 id="4。AbstractBeanFactory"><a href="#4。AbstractBeanFactory" class="headerlink" title="4。AbstractBeanFactory"></a>4。AbstractBeanFactory</h3><pre><code>从这里才真正开始spring获取和新建bean。   3.getBean方法，是获取bean的开始，真正开始获取bean的操作是从doGetBean开始的   4.先通过name获得BeanName，因为工厂bean的名字前面需要加“&amp;“符号   5.然后检查singleton是否有bean实例已经生成，spring先不管你的bean是单列模式还是原型模式，一上来就先去单利的注册器中去获取缓存中已经实现的bean      1).先从singletonObjects中查找是否有已经实例化的bean有则返回    2).没有在加载完成的bean则去看是否正在加载中，如果都没有则直接返回null；    3).如果是正在加载中，则看是否已经提前曝光    4).如果没有提前曝光，则判定是否可以提前曝光，如果不可用则直接返回null；    5).如果可以提前曝光则去获取当前beanName的已经加载完成的工厂bean缓存中的实例    6).如果factory存在存在这个实例，则提前曝光当前bean，然后移除这个工厂。6.如果检查有实例返回，则去getObjectForBeanInstance这个方法中去获得自己正在需要的bean    1).则检查当前的beanname如果是工厂bean的名字，但是已经获取的beanInstance不是工厂bean则直接返回异常    2).如果是普通bean实例则直接返回beanInstance对象就可用    3).如果是factoryBean, 则去查找当前beanName的RootBeanDefinition并且合并所有parentBeanDefinition的属性，获取synthetic属性后去创建实例    4).生成factoyBean使用getObjectFromFactoryBean这个方法    5).如果创建的是单列，而且缓存中已经有这个bean        * 则从缓存factoryBeanObjectCache获取当前实例，如果缓存中有bean则直接返回        * 如果没有则用doGetObjectFromFactoryBean生成            这个方法主要做来两件是，            + 第一件是如果这个bean的安全管理System.getSecurityManager不是null的话就用AccessController.doPrivileged方法            去实现factory.getObject()方法，否则的话就是直接factory.getObject()方方法取得            + 第二件是如果获取的object是null的话判定这个bean是否是正在创建的如果是则抛出异常，不是的话则返回一个NullBean        * 返回过来的object后，再去factoryBeanObjectCache取一次缓存实例，alreadyThere            + 如果alreadyThere有缓存则覆盖前面拿到的bean，因为循环依赖前面给的bean有可能是nullbean            + 否则的话，如果shouldPostProcess 是ture 需要去调用postProcessObjectFromFactoryBean 这个后置处理，然后放入factoryBeanObjectCache            + 这里返回的object就是这次 getbean正在得到的bean7.如果没有实例返    1).如果是在一个原型模式的循环引用中又引用到了自己，则抛出异常    2).检查是否有parentBeanFactory，如果有而且也包含beanName的BeanDefinition         如果parentBeanFactory实现了AbstractBeanFactory，则直接调用parentBeanFactory中的doGetBean获得bean         否则的话调用parentBeanFactory的getBean来获得bean    3).如果没有parentBeanFactory,则开始加载    4).如果typeCheckOnly是false则调用markBeanAsCreated标记这个beanname到正在创建的map缓存中alreadyCreated    5).然后开始用getMergedLocalBeanDefinition合并bean的BeanDefinition到RootBeanDefinition中    6).用checkMergedBeanDefinition检测合并后的得到的RootBeanDefinition    7.)通过RootBeanDefinition.getDependsOn()获取这个bean所依赖的beanName数组，如果者beanname不为空则通过递归先去实例化这些bean    8).如果前面的都bean都实例化完成来，则通过检测RootBeanDefinition的scope类型来分别实例化各个bean    9).先从singleton模式开始        * 第一步先用getSingleton来创建bean，用了函数式方法传入createBean(beanName, mbd, args);        * getSingleton第一步先锁定singletonObjects后再去获取缓存中是否有对应的bean缓存，有缓存则直接返回实例        * 如果为空则去检测是否可用实现单列，不行直接返回异常        * 调用创建单利的前置方法beforeSingletonCreation，默认实现就是一个简单的注册beanname        * 通过传入的createBean方法返回的factoryBean的getObject去获取实例object        * 调用创建单利的后置方法afterSingletonCreation，默认就是从正在创建的map中移除当前bean        * 然后调用addSingleton去实现bean 的注册，加入到singletonObjects缓存，并注册到registeredSingletons，        从早曝光缓存earlySingletonObjects和singletonFactories中删除，        * 返回实例以后调用getObjectForBeanInstance，和前面直接从缓存中获取bean后调用的方法相同    10).如果是prototype模式        * 先通过beforePrototypeCreation注册原型正在创建的缓存中        * 通过createName创建bean        * 后置处理afterPrototypeCreation方法从原型创建缓存中删除创建完成的bean        * 返回实例以后调用getObjectForBeanInstance，和前面直接从缓存中获取bean后调用的方法相同    11).其他的模式 几乎和原型模式创建的方法类似。</code></pre><h3 id="5-AbstractAutowireCapableBeanFactory"><a href="#5-AbstractAutowireCapableBeanFactory" class="headerlink" title="5.AbstractAutowireCapableBeanFactory"></a>5.AbstractAutowireCapableBeanFactory</h3><pre><code>上面在doGetBean中有一个很重要的方法createBean方法是没有实现的，这个方法是在AbstractAutowireCapableBeanFactory这个类中实现的。1.createBean这个方法是spring创建bean的方式2.开始创建bean时先要确定bean的类型，使用resolveBeanClass方法。    1).先从RootBeanDefinition.hasBeanClass() 中获取已经加载好的类型，如果有已经确定好的类型，就直接返回    2).如果没取到则需要直接去解析，使用doResolveBeanClass()方法。这里又看到System.getSecurityManager这个安全检测，用途和factory.getObject一样。    3).真正解析在这里doResolveBeanClass()里面有一头大象        * 让我们来解析这头大象，首先确定classload类加载器，        * 然后检测typesToMatch，前面给入的类型参数，这里typesToMatch，这个参数一定是null，因为前面没传入。            + 如果typesToMatch不等于空则获取一个临时类加载器getTempClassLoader()            + 如果有临时的类加载器，并且是继承于DecoratingClassLoader类加载器的就用这个的excludeClass方法去排除装饰器来确定使用那个构造方法。            + 然后通过RootBeanDefinition取出className            + 调用 beanExpressionResolverevaluate方法，去评估下给定的beanName是否使用spEL表达式，如果是就用解析其解析后对象            + 如果从mdb中取出的className和解析出来的evaluated对象不相同的话就表示这里使用来动态解析表达式            + 如果evaluated是class是直接返回对象，如果evaluated是String就通过反射生成对象返回，其他情况都抛出异常            + 相反如果从mdb中取出的className和解析出来的evaluated对象相同的话就去反射className生成对象返回。        * 获得解析结构对象后如果mdb是类的话就把它升级为一个RootBeanDefinition，然后把解析生成的对象给到这个mdb中去        * 接着调用这个mdb的prepareMethodOverides() 方法去校验init-method方法是否存在。不存在或者有多个则直接抛出异常        * 接下来是调用resolveBeforeInstantiation这个方法是给实现了 BeanPostProcessors接口来处理对象一个入库，        如果被BeanPostProcessors包装后生成来对象实例则直接返回生成对象        * 如果没有返回就开始进入真正的doCreateBean方法去创建对象了            现在开始进行正在的bean创建了，如果这个要创建的bean是单例模式的，先从factoryBeanInstanceCache中去取一个未完成的beanFactory的实例            + 如果factoryBeanInstanceCache为空则去创建这个实例用createBeanInstance方法            + createBeanInstance还是去前面用到的resolveBeanClass方法中去解析得到一个bean            + 生成后去校验这个bean是否有公共的无参构造函数没有的话就抛出异常            + 去mdb中获取getInstanceSupplier如果有的话就使用obtainFromSupplier方法去获得一个包装类BeanWrapperImpl            + 去mdb中获取getFactoryMethodName如果不为空的话用instantiateUsingFactoryMethod方法去通过静态工厂方法去获取bean获取一个BeanWrapperImpl                # 具体是使用ConstructorResolver的instantiateUsingFactoryMethod方法去生成一个BeanWrapper实例的            + 如果已经解析过则使用解析好的构造函数方法不需要再次锁定 ， 一个类中有多个构造函数，判断使用哪个构造函数实例化过程比较耗性能，            所以采用缓存机制，如果已经解析过则不需要                  # 重复解析而是直接从RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod缓存的值去取，否则需要                  # 再次解析，并将解析的结果添加至RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod中。             + 获得BeanWrapper实例以后从BeanWrapper获取对象bean和beanType            + 然后去合并所有beanDefinition的post-processors，然后在mbd.postProcessed = true;            + 接着如果是单利模式并且允许提前曝光，则去获得早加载产生的bean去加载的到singletonfactory中去            + 使用populateBean方法去填充mdb但是没有看到里面有实现方法            + 使用initializeBean方法初始化bean                # 初始化第一步调用invokeAwareMethods方法把bean实现的aware接口进行填充，告诉这个bean在容器中的名字                # 然后调用applyBeanPostProcessorsBeforeInitialization获取这个bean的后置处理方法后返回wrappedBean                # 接着调用invokeInitMethods，如果bean的配置文件中通过init-method属性指定初始化方法，则就用这个方法去初始化bean，                真正调用是通过invokeCustomInitMethod这个方法来实现的                # 最后是调用applyBeanPostProcessorsAfterInitialization后置处理方法在bean初始化后处理的方法            + 接着判断如果当前的bean是正在创建的bean则去缓存总获取当前的bean实例，            + 如果获取的bean不为空则替换前面生成的bean实例            + 否则的话检测依赖的bean是否已经全部创建，如果有没有创建完成的则直接报错            + 如果顺利就使用registerDisposableBeanIfNecessary方法去注册刚生成的bean后返回生成bean实例        * 这次返回的bean就是最后生成的bean</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;1-Source&quot;&gt;&lt;a href=&quot;#1-Source&quot; class=&quot;headerlink&quot; title=&quot;1.Source&quot;&gt;&lt;/a&gt;1.Source&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;spring 初始化最先获得资源如url，url,file的source对象
       
     
     </summary>
@@ -292,7 +341,7 @@
     <link href="http://a337928.github.io/2017/09/17/jvm/"/>
     <id>http://a337928.github.io/2017/09/17/jvm/</id>
     <published>2017-09-17T12:04:42.000Z</published>
-    <updated>2020-07-06T14:50:46.170Z</updated>
+    <updated>2020-07-20T15:00:30.353Z</updated>
     
     <content type="html"><![CDATA[<p>​       </p><h2 id="java虚拟机运行是区域主要分为五个"><a href="#java虚拟机运行是区域主要分为五个" class="headerlink" title="java虚拟机运行是区域主要分为五个"></a>java虚拟机运行是区域主要分为五个</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">最近在看《深入理解java虚拟机》这本是书算是国内写的比较好的讲述jvm原理的是书籍，看完后自己做下读书笔记增加印象。</span><br></pre></td></tr></table></figure><ul><li>程序计数器</li><li>虚拟机栈</li><li>本地方法栈</li><li>堆</li><li>方法区</li></ul><h3 id="1-程序计数器"><a href="#1-程序计数器" class="headerlink" title="1.程序计数器"></a>1.程序计数器</h3><pre><code>程序计数器是一块比较小的内存空间。可以看作是当前现场所执行的字节码的行号指示器。每条线程都有一个独立的程序计数器，在各线程之间是独立存储的，这类内存区域为“线程私有”内存。如果是一个Native方法这个计数器值为空（Undefined）。</code></pre><h3 id="2-java虚拟机栈"><a href="#2-java虚拟机栈" class="headerlink" title="2.java虚拟机栈"></a>2.java虚拟机栈</h3><pre><code>虚拟机栈也是线程私有的，它的生命周期和线程相同。每个java方法在执行的时候都会创建一个栈帧。用于储存局部变量表，操作数栈，动态链接，方法出口信息等。局部变量表存放了编译期可预知的各种基本数据类型，对象引用，returnAddress类型。局部变量表所需要的内存空间在编译期间完成分配，当进入一个方法时，这个方法需要在帧中分配多大的局部空间是完全确定的，在方法运行期间不会改变局部变量的大小。</code></pre><h3 id="3-本地方法栈"><a href="#3-本地方法栈" class="headerlink" title="3.本地方法栈"></a>3.本地方法栈</h3><pre><code>本地方法栈和虚拟机栈功能基本相同，只是针对的对象不同。它针对的是虚拟机使用到的Native方法服务。在虚拟机规范中对它没有强制规定，可以把它合并到虚拟机栈中。</code></pre><h3 id="4-堆"><a href="#4-堆" class="headerlink" title="4.堆"></a>4.堆</h3><pre><code>堆是java虚拟机所管理的最大的一块内存区域。java堆是本所有的线程共享的一块内存区域，在虚拟机启动时创建。这块内存区域唯一目的就是存放对象实例，几乎所有的对象实例都创建在这里。java堆是垃圾收集器的主要管理区域，从垃圾收集器基本采用分代收集算法来区分堆区域，堆区域还可以细分为：新生代和老年代；再细致一点有分Eden空间、From Survivor空间、To Survivor空间等。从内存分配的角度来看，线程共享的java堆中可能划分出多个线程私有的分配缓冲区（Thread Local Allocation Buffer，TLAB）</code></pre><h3 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5.方法区"></a>5.方法区</h3><pre><code>方法区也是各个线程共享的区域，它用于储存已经被虚拟机加载的类的信息、常量、静态变量、即时编译器编译后的代码数据等。很多人也把这个区域叫永久代。</code></pre><h3 id="6-运行时常量"><a href="#6-运行时常量" class="headerlink" title="6.运行时常量"></a>6.运行时常量</h3><pre><code>运行时常量池是方法区的一部分。clas文件中除了有类似的版本、字段、方法、接口等信息描述外，还有一项信息是常量池，用于存放编译期产生的各种字面量和符号引用，这部分在类加载后进入方法区的运行时常量池中存放，还会把翻译出来的直接引用也存储在运行时常量池中。</code></pre><h3 id="7-直接内存"><a href="#7-直接内存" class="headerlink" title="7.直接内存"></a>7.直接内存</h3><pre><code>直接内存不是虚拟机运行时数据的一部分，也不在java虚拟机规范中定义的内存区域。在JDK1.4中加入了NIO类，引入了基于通道与缓冲区的I／O方式，它可以使用Native函数库直接分配堆外内存，然后通过一个存储在java中的DirectByteBuffer对象作为这块内容的引用操作。</code></pre>]]></content>
     
