@@ -29,7 +29,7 @@
 <meta property="og:description" content="volatile 关键字解析（一）​        要说清楚jvm中volatile关键字的实现原理这里需要先解释一下jvm中的以下的几种原子操作 关键的原子操作介绍 lock：作用于内存的变量，它把一个变量标识为一条线程独占的状态。 unlock：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。 read：作用于主内存的变量，它把一个变量的值从主内存传输">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-07-20T15:01:42.000Z">
-<meta property="article:modified_time" content="2020-07-20T15:01:24.349Z">
+<meta property="article:modified_time" content="2020-07-27T15:06:11.612Z">
 <meta property="article:author" content="王滔">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="ivm">
@@ -168,7 +168,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#volatile-关键字解析（一）"><span class="post-toc-number">1.</span> <span class="post-toc-text">volatile 关键字解析（一）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#关键的原子操作介绍"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">关键的原子操作介绍</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原子操作的规则"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">原子操作的规则</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#volatile-关键字解析（一）"><span class="post-toc-number">1.</span> <span class="post-toc-text">volatile 关键字解析（一）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#关键的原子操作介绍"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">关键的原子操作介绍</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原子操作的规则"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">原子操作的规则</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#volatile关键字的作用"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">volatile关键字的作用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#怎样保证变量对所有线程的可见性"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">怎样保证变量对所有线程的可见性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#怎样禁止指令重排的优化"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">怎样禁止指令重排的优化</span></a></li></ol></li></ol></li></ol>
         </nav>
     </aside>
 
@@ -214,6 +214,16 @@
 <li>如果一个变量事先没有被lock操作锁定，那就不允许对他执行unlock操作，也不允许unlock一个被其他线程锁定的变量</li>
 <li>对一个变量执行unlock操作之前，必须先把此变量同步回主内存中（执行store、write操作）。</li>
 </ul>
+<h2 id="volatile关键字的作用"><a href="#volatile关键字的作用" class="headerlink" title="volatile关键字的作用"></a>volatile关键字的作用</h2><ul>
+<li><p>保证此变量对所有线程的可见性</p>
+</li>
+<li><p>禁止指令重排序优化</p>
+</li>
+</ul>
+<h3 id="怎样保证变量对所有线程的可见性"><a href="#怎样保证变量对所有线程的可见性" class="headerlink" title="怎样保证变量对所有线程的可见性"></a>怎样保证变量对所有线程的可见性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">volatile关键字，的一个特点就是只有这个变量被改变会立即把变量同步会主内存。而每个线程在读取volatile关键字修饰的变量时必须先刷新变量值，然后再读区这个值，这样就保证了每次读取的值都是最新的。</span><br></pre></td></tr></table></figure>
+
+<h3 id="怎样禁止指令重排的优化"><a href="#怎样禁止指令重排的优化" class="headerlink" title="怎样禁止指令重排的优化"></a>怎样禁止指令重排的优化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">volatile关键字会禁止处理器进行指令重排，从而实现了一个内存屏障，这样有volatile关键字修饰的变量以前的代码就不会乱序执行，从而导致volatile关键字修饰的变量值和代码流程值不一致</span><br></pre></td></tr></table></figure>
+
 
         </div>
 
@@ -222,7 +232,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2020-07-20T15:01:24.349Z" itemprop="dateUpdated">2020-07-20 23:01:24</time>
+    最后更新时间：<time datetime="2020-07-27T15:06:11.612Z" itemprop="dateUpdated">2020-07-27 23:06:11</time>
 </span><br>
 
 
