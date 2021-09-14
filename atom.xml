@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://a337928.github.io/"/>
-  <updated>2020-07-30T14:58:01.943Z</updated>
+  <updated>2021-09-14T14:46:09.385Z</updated>
   <id>http://a337928.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>synchronized的实现原理以及锁优化</title>
+    <link href="http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/"/>
+    <id>http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/</id>
+    <published>2021-09-12T13:16:00.000Z</published>
+    <updated>2021-09-14T14:46:09.385Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="synchronized的实现原理以及锁优化"><a href="#synchronized的实现原理以及锁优化" class="headerlink" title="synchronized的实现原理以及锁优化"></a>synchronized的实现原理以及锁优化</h1><h3 id="synchronized的实现原理"><a href="#synchronized的实现原理" class="headerlink" title="synchronized的实现原理"></a>synchronized的实现原理</h3><ul><li><p>synchronized作用于<strong>「方法」</strong>或者<strong>「代码块」</strong>，保证被修饰的代码在同一时间只能被一个线程访问。</p></li><li><p>synchronized修饰代码块时，JVM采用<strong>「monitorenter、monitorexit」</strong>两个指令来实现同步</p></li><li><p>synchronized修饰同步方法时，JVM采用<strong>「ACC_SYNCHRONIZED」</strong>标记符来实现同步</p></li><li><p>monitorenter、monitorexit或者ACC_SYNCHRONIZED都是<strong>「基于Monitor实现」</strong>的</p></li><li><p>实例对象里有对象头，对象头里面有Mark Word，Mark Word指针指向了<strong>「monitor」</strong></p></li><li><p>Monitor其实是一种<strong>「同步工具」</strong>，也可以说是一种<strong>「同步机制」</strong>。</p></li><li><p>在Java虚拟机（HotSpot）中，Monitor是由<strong>「ObjectMonitor实现」</strong>的。ObjectMonitor体现出Monitor的工作原理</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ObjectMonitor() &#123;</span><br><span class="line">    _header       = <span class="literal">NULL</span>;</span><br><span class="line">    _count        = <span class="number">0</span>; <span class="comment">// 记录线程获取锁的次数</span></span><br><span class="line">    _waiters      = <span class="number">0</span>,</span><br><span class="line">    _recursions   = <span class="number">0</span>;  <span class="comment">//锁的重入次数</span></span><br><span class="line">    _object       = <span class="literal">NULL</span>;</span><br><span class="line">    _owner        = <span class="literal">NULL</span>;  <span class="comment">// 指向持有ObjectMonitor对象的线程</span></span><br><span class="line">    _WaitSet      = <span class="literal">NULL</span>;  <span class="comment">// 处于wait状态的线程，会被加入到_WaitSet</span></span><br><span class="line">    _WaitSetLock  = <span class="number">0</span> ;</span><br><span class="line">    _Responsible  = <span class="literal">NULL</span> ;</span><br><span class="line">    _succ         = <span class="literal">NULL</span> ;</span><br><span class="line">    _cxq          = <span class="literal">NULL</span> ;</span><br><span class="line">    FreeNext      = <span class="literal">NULL</span> ;</span><br><span class="line">    _EntryList    = <span class="literal">NULL</span> ;  <span class="comment">// 处于等待锁block状态的线程，会被加入到该列表</span></span><br><span class="line">    _SpinFreq     = <span class="number">0</span> ;</span><br><span class="line">    _SpinClock    = <span class="number">0</span> ;</span><br><span class="line">    OwnerIsThread = <span class="number">0</span> ;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><p>ObjectMonitor的几个关键属性 _count、_recursions、_owner、_WaitSet、 _EntryList 体现了monitor的工作原理</p><p><img src="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125126348-1377533761.png" alt="img"></p><h3 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h3></li></ul><p>在讨论锁优化前，先看看JAVA对象头(32位JVM)中Mark Word的结构图吧~</p><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125100113-1746446114.png" alt="img" title>                </div>                <div class="image-caption">img</div>            </figure><p>Mark Word存储对象自身的运行数据，如<strong>「哈希码、GC分代年龄、锁状态标志、偏向时间戳（Epoch）」</strong> 等，为什么区分<strong>「偏向锁、轻量级锁、重量级锁」</strong>等几种锁状态呢？</p><blockquote><p>在JDK1.6之前，synchronized的实现直接调用ObjectMonitor的enter和exit，这种锁被称之为<strong>「重量级锁」</strong>。从JDK6开始，HotSpot虚拟机开发团队对Java中的锁进行优化，如增加了适应性自旋、锁消除、锁粗化、轻量级锁和偏向锁等优化策略。</p></blockquote><ul><li>偏向锁：在无竞争的情况下，把整个同步都消除掉，CAS操作都不做。</li><li>轻量级锁：在没有多线程竞争时，相对重量级锁，减少操作系统互斥量带来的性能消耗。但是，如果存在锁竞争，除了互斥量本身开销，还额外有CAS操作的开销。</li><li>自旋锁：减少不必要的CPU上下文切换。在轻量级锁升级为重量级锁时，就使用了自旋加锁的方式</li><li>锁粗化：将多个连续的加锁、解锁操作连接在一起，扩展成一个范围更大的锁。</li></ul><blockquote><p>举个例子，买门票进动物园。老师带一群小朋友去参观，验票员如果知道他们是个集体，就可以把他们看成一个整体（锁租化），一次性验票过，而不需要一个个找他们验票。</p></blockquote><ul><li>锁消除:虚拟机即时编译器在运行时，对一些代码上要求同步，但是被检测到不可能存在共享数据竞争的锁进行削除。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;synchronized的实现原理以及锁优化&quot;&gt;&lt;a href=&quot;#synchronized的实现原理以及锁优化&quot; class=&quot;headerlink&quot; title=&quot;synchronized的实现原理以及锁优化&quot;&gt;&lt;/a&gt;synchronized的实现原理以及锁
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/categories/java/"/>
+    
+      <category term="锁" scheme="http://a337928.github.io/categories/java/%E9%94%81/"/>
+    
+    
+      <category term="java" scheme="http://a337928.github.io/tags/java/"/>
+    
+      <category term="锁" scheme="http://a337928.github.io/tags/%E9%94%81/"/>
+    
+  </entry>
   
   <entry>
     <title>volatile 关键字解析（一）</title>

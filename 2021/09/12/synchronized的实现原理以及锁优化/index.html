@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>synchronized的实现原理以及锁优化 | Arthur&#39;s blog | java 平凡之路</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="java,锁">
+    <meta name="description" content="synchronized的实现原理以及锁优化synchronized的实现原理 synchronized作用于「方法」或者「代码块」，保证被修饰的代码在同一时间只能被一个线程访问。  synchronized修饰代码块时，JVM采用「monitorenter、monitorexit」两个指令来实现同步  synchronized修饰同步方法时，JVM采用「ACC_SYNCHRONIZED」标记符来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="synchronized的实现原理以及锁优化">
+<meta property="og:url" content="http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Arthur&#39;s blog">
+<meta property="og:description" content="synchronized的实现原理以及锁优化synchronized的实现原理 synchronized作用于「方法」或者「代码块」，保证被修饰的代码在同一时间只能被一个线程访问。  synchronized修饰代码块时，JVM采用「monitorenter、monitorexit」两个指令来实现同步  synchronized修饰同步方法时，JVM采用「ACC_SYNCHRONIZED」标记符来">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125126348-1377533761.png">
+<meta property="og:image" content="http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125100113-1746446114.png">
+<meta property="article:published_time" content="2021-09-12T13:16:00.000Z">
+<meta property="article:modified_time" content="2021-09-14T14:46:09.385Z">
+<meta property="article:author" content="王滔">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="锁">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125126348-1377533761.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Arthur&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/logo.png">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">王滔</h5>
+          <a href="mailto:a337928@gmail.com" title="a337928@gmail.com" class="mail">a337928@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/a337928" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://www.weibo.com/1791654403" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">synchronized的实现原理以及锁优化</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">synchronized的实现原理以及锁优化</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-09-12T13:16:00.000Z" itemprop="datePublished" class="page-time">
+  2021-09-12
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/%E9%94%81/">锁</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#synchronized的实现原理以及锁优化"><span class="post-toc-number">1.</span> <span class="post-toc-text">synchronized的实现原理以及锁优化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#synchronized的实现原理"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">synchronized的实现原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#锁优化"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">锁优化</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-synchronized的实现原理以及锁优化"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">synchronized的实现原理以及锁优化</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-09-12 21:16:00" datetime="2021-09-12T13:16:00.000Z"  itemprop="datePublished">2021-09-12</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/%E9%94%81/">锁</a></li></ul></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="synchronized的实现原理以及锁优化"><a href="#synchronized的实现原理以及锁优化" class="headerlink" title="synchronized的实现原理以及锁优化"></a>synchronized的实现原理以及锁优化</h1><h3 id="synchronized的实现原理"><a href="#synchronized的实现原理" class="headerlink" title="synchronized的实现原理"></a>synchronized的实现原理</h3><ul>
+<li><p>synchronized作用于<strong>「方法」</strong>或者<strong>「代码块」</strong>，保证被修饰的代码在同一时间只能被一个线程访问。</p>
+</li>
+<li><p>synchronized修饰代码块时，JVM采用<strong>「monitorenter、monitorexit」</strong>两个指令来实现同步</p>
+</li>
+<li><p>synchronized修饰同步方法时，JVM采用<strong>「ACC_SYNCHRONIZED」</strong>标记符来实现同步</p>
+</li>
+<li><p>monitorenter、monitorexit或者ACC_SYNCHRONIZED都是<strong>「基于Monitor实现」</strong>的</p>
+</li>
+<li><p>实例对象里有对象头，对象头里面有Mark Word，Mark Word指针指向了<strong>「monitor」</strong></p>
+</li>
+<li><p>Monitor其实是一种<strong>「同步工具」</strong>，也可以说是一种<strong>「同步机制」</strong>。</p>
+</li>
+<li><p>在Java虚拟机（HotSpot）中，Monitor是由<strong>「ObjectMonitor实现」</strong>的。ObjectMonitor体现出Monitor的工作原理</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ObjectMonitor() &#123;</span><br><span class="line">    _header       = <span class="literal">NULL</span>;</span><br><span class="line">    _count        = <span class="number">0</span>; <span class="comment">// 记录线程获取锁的次数</span></span><br><span class="line">    _waiters      = <span class="number">0</span>,</span><br><span class="line">    _recursions   = <span class="number">0</span>;  <span class="comment">//锁的重入次数</span></span><br><span class="line">    _object       = <span class="literal">NULL</span>;</span><br><span class="line">    _owner        = <span class="literal">NULL</span>;  <span class="comment">// 指向持有ObjectMonitor对象的线程</span></span><br><span class="line">    _WaitSet      = <span class="literal">NULL</span>;  <span class="comment">// 处于wait状态的线程，会被加入到_WaitSet</span></span><br><span class="line">    _WaitSetLock  = <span class="number">0</span> ;</span><br><span class="line">    _Responsible  = <span class="literal">NULL</span> ;</span><br><span class="line">    _succ         = <span class="literal">NULL</span> ;</span><br><span class="line">    _cxq          = <span class="literal">NULL</span> ;</span><br><span class="line">    FreeNext      = <span class="literal">NULL</span> ;</span><br><span class="line">    _EntryList    = <span class="literal">NULL</span> ;  <span class="comment">// 处于等待锁block状态的线程，会被加入到该列表</span></span><br><span class="line">    _SpinFreq     = <span class="number">0</span> ;</span><br><span class="line">    _SpinClock    = <span class="number">0</span> ;</span><br><span class="line">    OwnerIsThread = <span class="number">0</span> ;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>ObjectMonitor的几个关键属性 _count、_recursions、_owner、_WaitSet、 _EntryList 体现了monitor的工作原理</p>
+<p><img src="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125126348-1377533761.png" alt="img"></p>
+<h3 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h3></li>
+</ul>
+<p>在讨论锁优化前，先看看JAVA对象头(32位JVM)中Mark Word的结构图吧~</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/1246845-20200728125100113-1746446114.png" alt="img" title>
+                </div>
+                <div class="image-caption">img</div>
+            </figure>
+
+<p>Mark Word存储对象自身的运行数据，如<strong>「哈希码、GC分代年龄、锁状态标志、偏向时间戳（Epoch）」</strong> 等，为什么区分<strong>「偏向锁、轻量级锁、重量级锁」</strong>等几种锁状态呢？</p>
+<blockquote>
+<p>在JDK1.6之前，synchronized的实现直接调用ObjectMonitor的enter和exit，这种锁被称之为<strong>「重量级锁」</strong>。从JDK6开始，HotSpot虚拟机开发团队对Java中的锁进行优化，如增加了适应性自旋、锁消除、锁粗化、轻量级锁和偏向锁等优化策略。</p>
+</blockquote>
+<ul>
+<li>偏向锁：在无竞争的情况下，把整个同步都消除掉，CAS操作都不做。</li>
+<li>轻量级锁：在没有多线程竞争时，相对重量级锁，减少操作系统互斥量带来的性能消耗。但是，如果存在锁竞争，除了互斥量本身开销，还额外有CAS操作的开销。</li>
+<li>自旋锁：减少不必要的CPU上下文切换。在轻量级锁升级为重量级锁时，就使用了自旋加锁的方式</li>
+<li>锁粗化：将多个连续的加锁、解锁操作连接在一起，扩展成一个范围更大的锁。</li>
+</ul>
+<blockquote>
+<p>举个例子，买门票进动物园。老师带一群小朋友去参观，验票员如果知道他们是个集体，就可以把他们看成一个整体（锁租化），一次性验票过，而不需要一个个找他们验票。</p>
+</blockquote>
+<ul>
+<li>锁消除:虚拟机即时编译器在运行时，对一些代码上要求同步，但是被检测到不可能存在共享数据竞争的锁进行削除。</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-09-14T14:46:09.385Z" itemprop="dateUpdated">2021-09-14 22:46:09</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" target="_blank" rel="external">http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="http://a337928.github.io">
+            <img src="/img/logo.png" alt="王滔">
+            王滔
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&title=《synchronized的实现原理以及锁优化》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&title=《synchronized的实现原理以及锁优化》 — Arthur's blog&source=java mysql" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《synchronized的实现原理以及锁优化》 — Arthur's blog&url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&via=http://a337928.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/07/20/volatile%20%E5%85%B3%E9%94%AE%E5%AD%97%E8%A7%A3%E6%9E%90/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">volatile 关键字解析（一）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>王滔 &copy; 2017 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&title=《synchronized的实现原理以及锁优化》 — Arthur's blog&pic=http://a337928.github.io/img/logo.png" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&title=《synchronized的实现原理以及锁优化》 — Arthur's blog&source=java mysql" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《synchronized的实现原理以及锁优化》 — Arthur's blog&url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/&via=http://a337928.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://a337928.github.io/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEmUlEQVR42u3aUW7jMAwFwL3/pbsHaOu8RyaA5Y6/isSxpVEBkRT//Yuvr2/X92+v7/z+q+QJv/32t2/3I1ldmDBhwoTplkxfl9f1QK/v33z+22SSpyXzzeeOCRMmTJiewZQ8LtmekzAiJ55NrA1frueOCRMmTJgwtQSbBDtZkvYTTJgwYcKEKdmk8wnPKqst62bZMGHChAnT85jadDQPHZIh5qFAPqpNEo4JEyZMmJ7ENDsCfMbfH+lvwoQJEyZMt2H6Kq9ZEDAbSb7lt8FEPWtMmDBhwnQsU5v6zo4/23afpMibL2RejH5R6sWECRMmTI9gmh1kbgKL9mDyc5+/4MOECRMmTMcyzX6cTLgNBfIUt20Y2i8kJkyYMGE6l+kTKWvCkReR26PKzZ0viryYMGHChOlYpnxY7w0jkm2+DRryRSoWDxMmTJgwHc6Ub8ObieVHp23bUPvkHA4TJkyYMJ3L1FaCc6a2FDsLGtq0OV+YOlPHhAkTJkw3ZpolhO222rYHbUrD+6e9iJgwYcKECdMhTO3VDqJtmnlXSNEWefMkGRMmTJgwPYlp0wQzKwq3xdk2Dc4PX4uwABMmTJgw3ZipPZJMNtHNseXm0DEvOrfBDSZMmDBhOp2pbZ1ZFUDX722LxTM+TJgwYcL0JKYkRJi1+CQb+Sdaf67HU4cFmDBhwoTpcUyza3OIuCnF5sucLP+L/iZMmDBhwnQU0yyVTTb4IrEsk+Q80W3fW1TEMWHChAnTIUxJwpkPbh9GRIeLZTG3PcgcFnkxYcKECdONmWYv26SUbUl3P7ZZ+RgTJkyYMD2DadNecz35NiUuNuk4jGiDjx++xYQJEyZMxzLNCq/vKhbPirxJuTn5tr4fEyZMmDAdyNQmq7MXX7+rzS6TFLotExf/R5gwYcKE6VimdoudFYiTaWyaWZMn18EBJkyYMGE6nClvr2m30nxKyYK1I3lbCRgTJkyYMB3L9K7Etd2A29Q3CVnaFtW3FawxYcKECdONmdokNh9ue7TZLkky5rzl6MW3mDBhwoTpWKZZIropAbfJcP5JXj5OZlQ08WDChAkTpkOYrl/clnQ35eBkefKQJf9XwIQJEyZMz2PaTzvnaEu6++PJpLybhB2YMGHChOlcpk2i2x5kzhqD2tAhf0JOiQkTJkyYzmVKEsvZdt5yz9pJZ21D7fEnJkyYMGE6lylvjmnLtZ8+2myPYPNScl0nwIQJEyZMN2aaNbLkyeesXJvfn6fNs0J2ETtgwoQJE6bbM+UNN7PibzulfAx5sDIsJWPChAkTpmOZ9sXWTfq6Kdfmizd7CyZMmDBhegbTV3klCfPmznyq+6cVhWNMmDBhwnQsU5u45gR5cpsUiDdtNznECggTJkyYMN2YadNqs2/ryVPuWeLaHo4OE2BMmDBhwnR7pv2mu2+jyYu8SQL85lo4JkyYMGH6M0z5oeYsyEgG3QYcm4NYTJgwYcL0N5lmbTR5i88M7nr7z49Ff3gaJkyYMGE6nGnTCpMfXuaNPlHhdX1IWRSpMWHChAnTsUyzMmsLmgQByXbepsF5qRcTJkyYMD2O6T/Cl8Q9KUFegwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '平凡之路';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

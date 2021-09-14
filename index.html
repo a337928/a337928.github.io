@@ -157,6 +157,58 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-synchronized的实现原理以及锁优化"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2021-09-12 21:16:00" datetime="2021-09-12T13:16:00.000Z"  itemprop="datePublished">2021-09-12</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/%E9%94%81/">锁</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/">synchronized的实现原理以及锁优化</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        synchronized的实现原理以及锁优化synchronized的实现原理
+synchronized作用于「方法」或者「代码块」，保证被修饰的代码在同一时间只能被一个线程访问。
+
+synchronized修饰代码块时，JVM采用「monitorenter、monitorexit」两个指令来实现同步
+
+synchronized修饰同步方法时，JVM采用「ACC_SYNCHRONIZED」标...
+    
+
+        <a href="/2021/09/12/synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%94%81%E4%BC%98%E5%8C%96/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-volatile 关键字解析"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -597,54 +649,6 @@ private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap
 
         </li>
     
-        <li class="post-list-item fade">
-            <article id="post-java代码测试"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2017-10-21 21:56:00" datetime="2017-10-21T13:56:00.000Z"  itemprop="datePublished">2017-10-21</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/io/">io</a></li></ul></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2017/10/21/java%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/">java io 学习代码</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        java io 练习很简单的java io 代码，启动一个服务开始等待客户端连接。收到一个客户端后连接后把和客户端的会化保存到一个Thread里面，然后一直保持这个会化接受客户端的发送的信息。
-服务端代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152...
-    
-
-        <a href="/2017/10/21/java%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/io/" rel="tag">io</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
     </ul>
 
     
@@ -678,7 +682,7 @@ private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap
         </p>
     </div>
     <div class="bottom">
-        <p><span>王滔 &copy; 2017 - 2020</span>
+        <p><span>王滔 &copy; 2017 - 2021</span>
             <span>
                 
                 Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
